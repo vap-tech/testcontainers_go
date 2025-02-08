@@ -3,6 +3,7 @@ package oracle
 import (
 	"context"
 	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
 
@@ -51,7 +52,7 @@ func Run(ctx context.Context, img string, opts ...testcontainers.ContainerCustom
 		username = rootUser
 	}
 
-	password, ok := req.Env["APP_PASSWORD"]
+	password, ok := req.Env["APP_USER_PASSWORD"]
 	if !ok {
 		password = defaultPassword
 	}
@@ -108,7 +109,8 @@ func (c *OracleContainer) ConnectionString(ctx context.Context, args ...string) 
 		extraArgs = "?" + extraArgs
 	}
 	// oracle://user:pass@server/service_name из дока на драйвер https://pkg.go.dev/github.com/sijms/go-ora
-	connectionString := fmt.Sprintf("oracle://%s:%s@%s:%s/%s?%s", c.username, c.password, host, containerPort.Port(), c.database, extraArgs)
+	connectionString := fmt.Sprintf("oracle://%s:%s@%s:%s/%s%s", c.username, c.password, host, containerPort.Port(), c.database, extraArgs)
+	log.Printf("connection string: %s", connectionString)
 	return connectionString, nil
 }
 
@@ -122,7 +124,7 @@ func WithUsername(username string) testcontainers.CustomizeRequestOption {
 
 func WithPassword(password string) testcontainers.CustomizeRequestOption {
 	return func(req *testcontainers.GenericContainerRequest) error {
-		req.Env["APP_PASSWORD"] = password
+		req.Env["APP_USER_PASSWORD"] = password
 
 		return nil
 	}
