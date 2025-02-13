@@ -8,13 +8,13 @@ import (
 	"time"
 )
 
-type PostgresContainer struct {
+type OracleContainer struct {
 	*oracle.OracleContainer
 	ConnectionString string
 }
 
-func CreatePostgresContainer(ctx context.Context) (*PostgresContainer, error) {
-	pgContainer, err := oracle.Run(ctx, "gvenzl/oracle-free",
+func CreateOracleContainer(ctx context.Context) (*OracleContainer, error) {
+	oraContainer, err := oracle.Run(ctx, "gvenzl/oracle-free",
 		//oracle.WithScripts(filepath.Join("..", "testdata", "init-db.sql")), // Пока похоже эфекта не имеет
 		//oracle.WithDatabase("FREEPDB2"), // Работает
 		//oracle.WithUsername("test-user"), // Контейнер останавливается с ненулевым кодом
@@ -26,13 +26,13 @@ func CreatePostgresContainer(ctx context.Context) (*PostgresContainer, error) {
 	if err != nil {
 		return nil, err
 	}
-	connStr, err := pgContainer.ConnectionString(ctx)
+	connStr, err := oraContainer.ConnectionString(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return &PostgresContainer{
-		OracleContainer:  pgContainer,
+	return &OracleContainer{
+		OracleContainer:  oraContainer,
 		ConnectionString: connStr,
 	}, nil
 }

@@ -23,6 +23,9 @@ func NewRepository(connStr string) (*Repository, error) {
 	if err != nil {
 		log.Print(err)
 	}
+
+	sqlText = ""
+
 	sqlText = "INSERT INTO customers (id, name, email) VALUES (0, 'Anna', 'a.petrenko@gmail.com')"
 	_, err = conn.Exec(sqlText)
 	if err != nil {

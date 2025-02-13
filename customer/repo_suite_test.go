@@ -11,19 +11,19 @@ import (
 
 type CustomerRepoTestSuite struct {
 	suite.Suite
-	pgContainer *testhelpers.PostgresContainer
-	repository  *Repository
-	ctx         context.Context
+	oracleContainer *testhelpers.OracleContainer
+	repository      *Repository
+	ctx             context.Context
 }
 
 func (suite *CustomerRepoTestSuite) SetupSuite() {
 	suite.ctx = context.Background()
-	pgContainer, err := testhelpers.CreatePostgresContainer(suite.ctx)
+	oraContainer, err := testhelpers.CreateOracleContainer(suite.ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	suite.pgContainer = pgContainer
-	repository, err := NewRepository(suite.pgContainer.ConnectionString)
+	suite.oracleContainer = oraContainer
+	repository, err := NewRepository(suite.oracleContainer.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +31,7 @@ func (suite *CustomerRepoTestSuite) SetupSuite() {
 }
 
 func (suite *CustomerRepoTestSuite) TearDownSuite() {
-	if err := suite.pgContainer.Terminate(suite.ctx); err != nil {
+	if err := suite.oracleContainer.Terminate(suite.ctx); err != nil {
 		log.Fatalf("error terminating oracle container: %s", err)
 	}
 }
